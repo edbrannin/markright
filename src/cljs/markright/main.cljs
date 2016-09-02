@@ -82,6 +82,33 @@
   (go (if (<! (verify-unsaved-changes))
         (.exit app))))
 
+(defn save-html-as! []
+  (go (let [file-path (save-dialog @*win*)
+            content (<! (ipc/call :get-current-content {}))]
+         (if (not (nil? file-path))
+           (do
+             (write-file! file-path content)
+             (ipc/cast :set-current-file {:file file-path
+                                          :content content}))))))
+
+(defn copy-as-html! []
+  (go (let [file-path (save-dialog @*win*)
+            content (<! (ipc/call :get-current-content {}))]
+         (if (not (nil? file-path))
+           (do
+             (write-file! file-path content)
+             (ipc/cast :set-current-file {:file file-path
+                                          :content content}))))))
+
+(defn copy-as-rich-text! []
+  (go (let [file-path (save-dialog @*win*)
+            content (<! (ipc/call :get-current-content {}))]
+         (if (not (nil? file-path))
+           (do
+             (write-file! file-path content)
+             (ipc/cast :set-current-file {:file file-path
+                                          :content content}))))))
+
 (defn save-file-as! []
   (go (let [file-path (save-dialog @*win*)
             content (<! (ipc/call :get-current-content {}))]
@@ -147,7 +174,11 @@
 
     {:label "Save as..."
      :accelerator "CmdOrCtrl+Shift+S"
-     :click save-file-as!}]})
+     :click save-file-as!}
+
+   {:label "Save HTML as..."
+     :accelerator "Alt+CmdOrCtrl+Shift+S"
+     :click save-html-as!}]})
 
 
 (def edit
@@ -177,8 +208,17 @@
 
     {:label "Select All"
      :accelerator "CmdOrCtrl+A"
-     :role "selectall"}]})
+     :role "selectall"}
 
+    {:type "separator"}
+
+    {:label "Copy All as HTML"
+     :accelerator "Shift+CmdOrCtrl+C"
+     :click copy-as-html!}
+
+    {:label "Copy All as Formatted Text"
+     :accelerator "Shift+Alt+CmdOrCtrl+C"
+     :click copy-as-rich-text!}]})
 
 
 (def window
