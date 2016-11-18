@@ -87,7 +87,7 @@
             content (<! (ipc/call :get-current-content {}))]
          (if (not (nil? file-path))
            (do
-             (write-file! file-path content)
+             (write-file! file-path (js/marked content))
              (ipc/cast :set-current-file {:file file-path
                                           :content content}))))))
 
@@ -96,7 +96,7 @@
             content (<! (ipc/call :get-current-content {}))]
          (if (not (nil? file-path))
            (do
-             (write-file! file-path content)
+             (write-file! file-path (js/marked content))
              (ipc/cast :set-current-file {:file file-path
                                           :content content}))))))
 
